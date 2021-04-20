@@ -6,7 +6,7 @@ const { createUser, getUser, getAllUsers, updateUser, deleteUser } = require('./
 
 const port = process.env.PORT || 7000
 
-// create a server
+// create a server and setup API endpoints
 const server = http.createServer((req, res) => {
     if (req.url === '/api/user' && req.method === 'POST') {
         createUser(req, res);  

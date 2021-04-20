@@ -1,9 +1,9 @@
 const User = require('../models/user');
-const { parse } = require('querystring')
+const { parse } = require('querystring');
+
+const FORM_URLENCODED = 'application/x-www-form-urlencoded';
 
 const createUser = async (req, res) => {
-    const FORM_URLENCODED = 'application/x-www-form-urlencoded';
-    
     try {
         if (req.headers['content-type'] === FORM_URLENCODED) {
             let user = "";
@@ -21,17 +21,16 @@ const createUser = async (req, res) => {
                     // return the saved user
                     res.writeHead(201, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify(result));
-                    res.end()
                 }
                 res.writeHead(400, { 'Content-Type': 'application/json' });
-                res.end('User already exists')
+                res.end(JSON.stringify({message: 'User already exists'}))
             });
         } else {
-            res.end(`Please use ${FORM_URLENCODED} and try again`)
+            res.end(JSON.stringify({message: `Please use ${FORM_URLENCODED} and try again`}));
         }
 
     } catch (error) {
-        res.end('Something went wrong please try again')
+        res.end(JSON.stringify({message: 'Something went wrong please try again'}));
         // console.log(error);
     }
 };
@@ -44,7 +43,7 @@ const getAllUsers = async (req, res) => {
         res.end(JSON.stringify(result));
 
     } catch (error) {
-        res.end('No user found')
+        res.end(JSON.stringify({message: 'Something went wrong please try again'}));
         // console.log(error);
     }
 }
@@ -57,35 +56,48 @@ const getUser = async (req, res, id) => {
         res.end(JSON.stringify(result));
 
     } catch (error) {
-        res.end('User not found')
+        res.end(JSON.stringify({message: 'Something went wrong please try again'}));
         // console.log(error);
     }
 }
 
 const updateUser = async (req, res, id) => {
     try {
+        if (req.headers['content-type'] === FORM_URLENCODED) {
+            let user = "";
 
-        // const id = req.params;
-        const result = await User.findById(id);
-    
-        res.writeHead(201, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(result));
+            req.on('data', (chunk) => {
+                user += chunk;
+            });
 
+            req.on('end', async () => {
+                // update the user to the database
+                const result = await User.findByIdAndUpdate(id, parse(user));
+                if (result) {
+                    // return the updated user
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify(result));
+                }
+                res.end(JSON.stringify({message: 'Something went wrong please try again'}));
+            });
+        } else {
+            res.end(JSON.stringify({message: `Please use ${FORM_URLENCODED} and try again`}));
+        }
     } catch (error) {
+        res.end(JSON.stringify({message: 'Something went wrong please try again'}));
         console.log(error);
     }
 }
 
 const deleteUser = async (req, res, id) => {
     try {
-
-        // const id = req.params;
         const result = await User.findById(id);
     
         res.writeHead(201, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(result));
 
     } catch (error) {
+        res.end(JSON.stringify({message: 'Something went wrong please try again'}));
         console.log(error);
     }
 }
