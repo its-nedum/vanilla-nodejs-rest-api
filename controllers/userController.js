@@ -52,7 +52,7 @@ const getUser = async (req, res, id) => {
     try {
         const result = await User.findById(id);
     
-        res.writeHead(201, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(result));
 
     } catch (error) {
@@ -85,20 +85,20 @@ const updateUser = async (req, res, id) => {
         }
     } catch (error) {
         res.end(JSON.stringify({message: 'Something went wrong please try again'}));
-        console.log(error);
+        // console.log(error);
     }
 }
 
 const deleteUser = async (req, res, id) => {
     try {
-        const result = await User.findById(id);
+        const result = await User.findByIdAndRemove(id);
     
-        res.writeHead(201, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(result));
 
     } catch (error) {
         res.end(JSON.stringify({message: 'Something went wrong please try again'}));
-        console.log(error);
+        // console.log(error);
     }
 }
 

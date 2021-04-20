@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const connectionString = "mongodb://localhost:27017/zuritest";
+const connectionString = "mongodb://localhost:27017/mydb";
 
 const db =  mongoose.connect(connectionString, 
     { 
